@@ -1122,6 +1122,13 @@
 </head>
 <body class="dot-bg">
 
+  <!-- Hidden form for Netlify build-time detection -->
+  <form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <input type="tel" name="phone" />
+  </form>
+
   <!-- ══════════════ NAV ══════════════ -->
   <nav>
     <a href="#" class="nav-logo">
