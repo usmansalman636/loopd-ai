@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loopd.ai — Your AI Chief of Staff, On WhatsApp</title>
+  <meta name="description" content="Loopd.ai turns WhatsApp into your AI personal assistant. Reminders, follow-ups, tasks and more — just send a message." />
+  <!-- Preload critical font subset only -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:        #0D7377;
+      --teal-light:  #14A5AB;
+      --teal-pale:   #E6F4F5;
+      --lime:        #C8F34A;
+      --lime-dark:   #A8D530;
+      --navy:        #0F1923;
+      --dark:        #111827;
+      --mid:         #6B7280;
+      --light:       #9CA3AF;
+      --bg:          #F5F6F7;
+      --white:       #FFFFFF;
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      --card-shadow-lg: 0 12px 48px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ── DOT GRID BACKGROUND ── */
+    .dot-bg {
+      background-color: var(--bg);
+      background-image: radial-gradient(circle, #CBD5E1 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(245,246,247,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 22px; font-weight: 800; color: var(--dark);
+      text-decoration: none;
+    }
+
+    .nav-logo .logo-dot {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .nav-logo .logo-dot svg { width: 18px; height: 18px; fill: white; }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--dark); }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+    .btn-ghost {
+      padding: 9px 20px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; color: var(--dark);
+      background: transparent; border: 1.5px solid #E5E7EB;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+
+    .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+    .btn-primary {
+      padding: 9px 22px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; color: white;
+      background: var(--teal); border: none;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    .btn-primary:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,115,119,0.3); }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating badge */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid #E5E7EB;
+      border-radius: 100px; padding: 6px 16px 6px 8px;
+      font-size: 13px; font-weight: 500; color: var(--mid);
+      margin-bottom: 36px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .hero-badge .badge-dot {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--teal-pale); display: flex; align-items: center; justify-content: center;
+    }
+
+    .hero-badge .badge-dot span { font-size: 12px; }
+
+    .hero h1 {
+      font-size: clamp(52px, 8vw, 92px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      color: var(--dark);
+      max-width: 880px;
+    }
+
+    .hero h1 .muted {
+      color: #C4C9D4;
+      font-weight: 800;
+    }
+
+    .hero p {
+      margin-top: 24px;
+      font-size: 18px; font-weight: 400; color: var(--mid);
+      max-width: 440px; line-height: 1.6;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex; align-items: center; gap: 14px;
+      justify-content: center;
+    }
+
+    .btn-hero {
+      padding: 16px 36px; border-radius: 14px;
+      font-size: 16px; font-weight: 700; color: white;
+      background: var(--teal); border: none;
+      cursor: pointer; transition: all 0.25s; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(13,115,119,0.35);
+    }
+
+    .btn-hero:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(13,115,119,0.4); }
+
+    .btn-hero-ghost {
+      padding: 16px 28px; border-radius: 14px;
+      font-size: 16px; font-weight: 600; color: var(--dark);
+      background: white; border: 1.5px solid #E5E7EB;
+      cursor: pointer; transition: all 0.25s; text-decoration: none;
+      box-shadow: var(--card-shadow);
+    }
+
+    .btn-hero-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+    .hero-trust {
+      margin-top: 32px;
+      font-size: 13px; color: var(--light); font-weight: 400;
+    }
+
+    /* Ensure hero text always renders above floating cards */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── FLOATING CARDS ── */
+    .float-card {
+      position: absolute;
+      background: white;
+      border-radius: 18px;
+      box-shadow: var(--card-shadow-lg);
+      padding: 16px 20px;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+    }
+
+    /* Chat bubble card — top left */
+    .card-chat {
+      top: 18%; left: 1%;
+      width: 232px;
+      animation: floatA 6s ease-in-out infinite;
+    }
+
+    .card-chat .chat-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    .chat-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+    .chat-time { font-size: 11px; color: var(--light); }
+
+    .chat-bubble {
+      background: #F0F9F9; border-radius: 0 12px 12px 12px;
+      padding: 10px 13px; font-size: 12.5px; color: var(--dark); line-height: 1.5;
+    }
+
+    .chat-bubble-out {
+      background: var(--teal); border-radius: 12px 0 12px 12px;
+      padding: 10px 13px; font-size: 12.5px; color: white; line-height: 1.5;
+      margin-top: 8px; margin-left: 20px;
+    }
+
+    /* Reminder card — top right */
+    .card-reminder {
+      top: 16%; right: 1%;
+      width: 210px;
+      animation: floatB 7s ease-in-out infinite;
+    }
+
+    .reminder-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--teal-pale); display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 10px;
+    }
+
+    .reminder-label { font-size: 11px; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px; }
+    .reminder-text { font-size: 14px; font-weight: 600; color: var(--dark); margin-top: 4px; line-height: 1.4; }
+    .reminder-time { font-size: 12px; color: var(--light); margin-top: 6px; }
+
+    /* Stats card — bottom left */
+    .card-stats {
+      bottom: 16%; left: 1%;
+      width: 192px;
+      animation: floatC 8s ease-in-out infinite;
+    }
+
+    .stats-label { font-size: 12px; color: var(--mid); font-weight: 500; margin-bottom: 8px; }
+
+    .stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .stat-row:last-child { margin-bottom: 0; }
+
+    .stat-name { font-size: 12px; color: var(--dark); font-weight: 500; }
+
+    .stat-bar-wrap {
+      flex: 1; margin: 0 10px; height: 5px;
+      background: #F3F4F6; border-radius: 100px; overflow: hidden;
+    }
+
+    .stat-bar { height: 100%; background: var(--teal); border-radius: 100px; }
+    .stat-pct { font-size: 11px; color: var(--mid); font-weight: 600; min-width: 28px; text-align: right; }
+
+    /* Follow-up card — bottom right */
+    .card-followup {
+      bottom: 18%; right: 1%;
+      width: 224px;
+      animation: floatD 9s ease-in-out infinite;
+    }
+
+    .fu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .fu-title { font-size: 13px; font-weight: 700; color: var(--dark); }
+    .fu-badge {
+      background: #FEF3C7; color: #D97706;
+      font-size: 10px; font-weight: 600;
+      padding: 3px 8px; border-radius: 100px;
+    }
+
+    .fu-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid #F3F4F6;
+    }
+
+    .fu-item:last-child { border-bottom: none; }
+
+    .fu-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .fu-dot.active { background: var(--teal); }
+    .fu-dot.pending { background: #FCD34D; }
+    .fu-dot.done { background: #10B981; }
+
+    .fu-info { flex: 1; }
+    .fu-contact { font-size: 12px; font-weight: 600; color: var(--dark); }
+    .fu-desc { font-size: 11px; color: var(--light); margin-top: 1px; }
+
+    /* Sticky note — mid left */
+    .card-sticky {
+      top: 50%; left: 0.5%;
+      transform: translateY(-50%) rotate(-3deg);
+      width: 170px;
+      background: #FEFCE8;
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: 4px 4px 16px rgba(0,0,0,0.1);
+      animation: floatE 10s ease-in-out infinite;
+    }
+
+    .sticky-pin {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #EF4444; margin: 0 auto 10px;
+    }
+
+    .card-sticky p {
+      font-size: 12.5px; line-height: 1.6; color: #374151;
+      font-style: italic;
+    }
+
+    /* Icon chip — mid right */
+    .card-chip {
+      top: 48%; right: 1%;
+      width: 64px; height: 64px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      animation: floatF 7.5s ease-in-out infinite;
+    }
+
+    /* Floating keyframes */
+    @keyframes floatA { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-12px) rotate(1deg)} }
+    @keyframes floatB { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-16px)} }
+    @keyframes floatC { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-10px) rotate(-1deg)} }
+    @keyframes floatD { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-14px)} }
+    @keyframes floatE { 0%,100%{transform:translateY(-50%) rotate(-3deg)} 50%{transform:translateY(calc(-50% - 10px)) rotate(-2deg)} }
+    @keyframes floatF { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-8px) rotate(5deg)} }
+
+    /* ══════════════════════════════
+       LOGOS / SOCIAL PROOF
+    ══════════════════════════════ */
+    .logos-section {
+      padding: 24px 48px 60px;
+      text-align: center;
+    }
+
+    .logos-label {
+      font-size: 13px; color: var(--light); font-weight: 500;
+      margin-bottom: 28px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .logos-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px; flex-wrap: wrap;
+    }
+
+    .logo-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid #E5E7EB;
+      border-radius: 100px; padding: 10px 20px;
+      font-size: 14px; font-weight: 600; color: var(--mid);
+      box-shadow: var(--card-shadow);
+    }
+
+    .logo-pill .icon { font-size: 18px; }
+
+    /* ══════════════════════════════
+       FEATURES
+    ══════════════════════════════ */
+    .section {
+      padding: 100px 48px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: var(--teal-pale); color: var(--teal);
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: clamp(36px, 5vw, 54px);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -2px; color: var(--dark);
+      max-width: 620px;
+    }
+
+    .section-title .muted { color: #C4C9D4; }
+
+    .section-sub {
+      font-size: 17px; color: var(--mid); line-height: 1.7;
+      max-width: 500px; margin-top: 16px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+    }
+
+    .feature-card {
+      background: white; border-radius: 20px;
+      padding: 32px 28px;
+      border: 1px solid #F3F4F6;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-lg);
+      border-color: rgba(13,115,119,0.15);
+    }
+
+    .feature-card.featured {
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+      background: var(--teal-pale);
+    }
+
+    .feature-card.featured .feature-icon {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .feature-title {
+      font-size: 18px; font-weight: 700; color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .feature-card.featured .feature-title { color: white; }
+
+    .feature-desc {
+      font-size: 14px; color: var(--mid); line-height: 1.6;
+    }
+
+    .feature-card.featured .feature-desc { color: rgba(255,255,255,0.75); }
+
+    .feature-tag {
+      display: inline-block; margin-top: 16px;
+      background: var(--teal-pale); color: var(--teal);
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .feature-card.featured .feature-tag {
+      background: rgba(255,255,255,0.2); color: white;
+    }
+
+    /* ══════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════ */
+    .how-section {
+      padding: 100px 48px;
+      background: var(--dark);
+      overflow: hidden;
+    }
+
+    .how-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .how-section .section-tag {
+      background: rgba(13,115,119,0.3); color: #5ECDD2;
+    }
+
+    .how-section .section-title { color: white; }
+    .how-section .section-title .muted { color: #374151; }
+    .how-section .section-sub { color: #6B7280; }
+
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 28px; margin-top: 64px;
+    }
+
+    .step-card {
+      background: #1C2A35; border-radius: 20px;
+      padding: 36px 28px;
+      border: 1px solid #1F2D38;
+      position: relative; overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .step-card:hover {
+      border-color: rgba(13,115,119,0.4);
+      transform: translateY(-4px);
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-light));
+    }
+
+    .step-number {
+      font-size: 60px; font-weight: 900; line-height: 1;
+      color: rgba(255,255,255,0.04);
+      position: absolute; top: 16px; right: 20px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .step-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: rgba(13,115,119,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 14px; color: #6B7280; line-height: 1.7;
+    }
+
+    /* Chat demo */
+    .chat-demo {
+      background: #1C2A35; border-radius: 20px;
+      padding: 28px; margin-top: 64px;
+      border: 1px solid #1F2D38;
+    }
+
+    .chat-demo-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+      padding-bottom: 16px; border-bottom: 1px solid #1F2D38;
+    }
+
+    .chat-demo-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: white;
+    }
+
+    .chat-demo-name { font-size: 15px; font-weight: 700; color: white; }
+    .chat-demo-status { font-size: 12px; color: #10B981; }
+
+    .chat-messages { display: flex; flex-direction: column; gap: 12px; }
+
+    .msg {
+      max-width: 65%; padding: 12px 16px;
+      border-radius: 16px; font-size: 14px; line-height: 1.5;
+    }
+
+    .msg-in {
+      background: #2A3B48; color: #E5E7EB;
+      border-radius: 4px 16px 16px 16px;
+      align-self: flex-start;
+    }
+
+    .msg-out {
+      background: var(--teal); color: white;
+      border-radius: 16px 4px 16px 16px;
+      align-self: flex-end;
+    }
+
+    .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; }
+
+    .msg-action {
+      background: #1A3040; border: 1px solid rgba(13,115,119,0.3);
+      border-radius: 12px; padding: 12px 16px;
+      align-self: flex-start; max-width: 75%;
+    }
+
+    .msg-action .action-label { font-size: 11px; color: var(--teal-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .msg-action .action-text { font-size: 13px; color: #E5E7EB; margin-top: 4px; }
+
+    /* ══════════════════════════════
+       PRICING
+    ══════════════════════════════ */
+    .pricing-section {
+      padding: 100px 48px;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .pricing-header { text-align: center; }
+    .pricing-header .section-title { max-width: 100%; }
+    .pricing-header .section-sub { max-width: 100%; margin: 16px auto 0; }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 64px;
+      align-items: start;
+    }
+
+    .price-card {
+      background: white; border-radius: 24px;
+      padding: 36px 30px;
+      border: 1.5px solid #F3F4F6;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s;
+    }
+
+    .price-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-lg); }
+
+    .price-card.popular {
+      background: var(--teal);
+      border-color: var(--teal);
+      transform: scale(1.03);
+      box-shadow: 0 20px 60px rgba(13,115,119,0.3);
+    }
+
+    .price-card.popular:hover { transform: scale(1.03) translateY(-4px); }
+
+    .popular-badge {
+      display: inline-block;
+      background: var(--lime); color: var(--navy);
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 5px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .price-tier {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--mid); margin-bottom: 8px;
+    }
+
+    .price-card.popular .price-tier { color: rgba(255,255,255,0.7); }
+
+    .price-amount {
+      display: flex; align-items: flex-end; gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .price-currency { font-size: 22px; font-weight: 700; color: var(--dark); padding-bottom: 6px; }
+    .price-card.popular .price-currency { color: white; }
+    .price-number { font-size: 54px; font-weight: 900; color: var(--dark); line-height: 1; letter-spacing: -2px; }
+    .price-card.popular .price-number { color: white; }
+    .price-period { font-size: 15px; color: var(--light); padding-bottom: 8px; }
+    .price-card.popular .price-period { color: rgba(255,255,255,0.6); }
+
+    .price-pkr {
+      font-size: 13px; color: var(--light); margin-bottom: 24px;
+    }
+
+    .price-card.popular .price-pkr { color: rgba(255,255,255,0.6); }
+
+    .price-divider {
+      height: 1px; background: #F3F4F6; margin-bottom: 24px;
+    }
+
+    .price-card.popular .price-divider { background: rgba(255,255,255,0.15); }
+
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+    .price-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--dark);
+    }
+
+    .price-card.popular .price-features li { color: rgba(255,255,255,0.9); }
+
+    .price-features li .check {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: var(--teal-pale); color: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+
+    .price-card.popular .price-features li .check {
+      background: rgba(255,255,255,0.2); color: white;
+    }
+
+    .price-features li .cross {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: #F3F4F6; color: #D1D5DB;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; flex-shrink: 0;
+    }
+
+    .price-features li.unavailable { color: var(--light); }
+
+    .price-btn {
+      display: block; width: 100%; margin-top: 32px;
+      padding: 14px; border-radius: 12px;
+      font-size: 15px; font-weight: 700;
+      text-align: center; text-decoration: none;
+      cursor: pointer; border: none; transition: all 0.25s;
+    }
+
+    .price-btn.outline {
+      background: transparent;
+      border: 1.5px solid #E5E7EB;
+      color: var(--dark);
+    }
+
+    .price-btn.outline:hover { border-color: var(--teal); color: var(--teal); }
+
+    .price-btn.solid {
+      background: white; color: var(--teal);
+    }
+
+    .price-btn.solid:hover { background: var(--lime); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+    /* ══════════════════════════════
+       TESTIMONIAL
+    ══════════════════════════════ */
+    .testimonial-section {
+      padding: 80px 48px;
+      background: white;
+    }
+
+    .testimonial-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      align-items: center;
+    }
+
+    .testimonial-left .section-tag { margin-bottom: 20px; }
+
+    .testimonial-card {
+      background: var(--bg); border-radius: 20px;
+      padding: 32px;
+      border: 1px solid #F3F4F6;
+    }
+
+    .testimonial-quote {
+      font-size: 18px; line-height: 1.6; color: var(--dark);
+      font-style: italic; margin-bottom: 20px;
+    }
+
+    .testimonial-quote::before { content: '"'; color: var(--teal); font-size: 32px; font-style: normal; line-height: 0; vertical-align: -12px; margin-right: 4px; }
+
+    .testimonial-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .author-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 16px;
+    }
+
+    .author-name { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .author-role { font-size: 12px; color: var(--light); }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-top: 32px;
+    }
+
+    .stat-item {
+      background: var(--bg); border-radius: 16px;
+      padding: 20px; border: 1px solid #F3F4F6;
+      text-align: center;
+    }
+
+    .stat-big { font-size: 36px; font-weight: 900; color: var(--teal); letter-spacing: -1px; }
+    .stat-label { font-size: 12px; color: var(--mid); margin-top: 4px; }
+
+    /* ══════════════════════════════
+       CTA SECTION
+    ══════════════════════════════ */
+    .cta-section {
+      padding: 100px 48px;
+      background: var(--dark);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(13,115,119,0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(40px, 6vw, 68px);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -2px; color: white;
+      max-width: 720px; margin: 0 auto;
+      position: relative;
+    }
+
+    .cta-section h2 .accent { color: var(--lime); }
+
+    .cta-section p {
+      font-size: 17px; color: #6B7280; line-height: 1.6;
+      max-width: 460px; margin: 20px auto 0;
+      position: relative;
+    }
+
+    .cta-actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-top: 40px;
+      position: relative;
+    }
+
+    .btn-lime {
+      padding: 16px 36px; border-radius: 14px;
+      font-size: 16px; font-weight: 700; color: var(--navy);
+      background: var(--lime); border: none;
+      cursor: pointer; transition: all 0.25s; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(200,243,74,0.35);
+    }
+
+    .btn-lime:hover { background: var(--lime-dark); transform: translateY(-2px); }
+
+    .whatsapp-number {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 24px; border-radius: 14px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      font-size: 15px; color: white; font-weight: 500;
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    footer {
+      background: #0A1118; padding: 60px 48px 36px;
+    }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+
+    .footer-brand .nav-logo { margin-bottom: 16px; }
+    .footer-brand p { font-size: 14px; color: #4B5563; line-height: 1.6; max-width: 280px; }
+
+    .footer-col-title { font-size: 13px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: #4B5563; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--teal-light); }
+
+    .footer-bottom {
+      padding-top: 24px; border-top: 1px solid #1F2937;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .footer-bottom p { font-size: 13px; color: #374151; }
+
+    .footer-bottom .teal { color: var(--teal-light); }
+
+    /* ══════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════ */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 1024px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 52px; letter-spacing: -2px; }
+      .float-card { display: none; }
+      .features-grid, .steps-grid, .pricing-grid { grid-template-columns: 1fr 1fr; }
+      .price-card.popular { transform: none; }
+      .testimonial-inner { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid, .steps-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .section, .pricing-section { padding: 60px 20px; }
+      .how-section { padding: 60px 20px; }
+      .hero { padding: 120px 20px 60px; }
+      .logos-section { padding: 20px 20px 40px; }
+      .cta-section { padding: 70px 20px; }
+      footer { padding: 40px 20px 24px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .hero-cta { flex-direction: column; }
+      .btn-hero, .btn-hero-ghost { width: 100%; text-align: center; }
+      .cta-actions { flex-direction: column; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── PERFORMANCE ── */
+    .float-card { will-change: transform; }
+    .logos-section, .section, .how-section,
+    .pricing-section, .testimonial-section,
+    .cta-section, footer {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 600px;
+    }
+
+    /* ══════════════════════════════
+       WAITLIST MODAL
+    ══════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(15, 25, 35, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1; pointer-events: all;
+    }
+
+    .modal {
+      background: white; border-radius: 28px;
+      padding: 48px 44px;
+      max-width: 480px; width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+      position: relative;
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; background: #F3F4F6; cursor: pointer;
+      font-size: 16px; color: var(--mid);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: #E5E7EB; color: var(--dark); }
+
+    .modal-icon {
+      width: 60px; height: 60px; border-radius: 18px;
+      background: var(--teal-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 24px;
+    }
+
+    .modal h2 {
+      font-size: 26px; font-weight: 800;
+      letter-spacing: -0.8px; color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      font-size: 15px; color: var(--mid); line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .modal-count {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--teal-pale); color: var(--teal);
+      font-size: 12px; font-weight: 700;
+      padding: 5px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .modal-count .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+
+    .modal-form { display: flex; flex-direction: column; gap: 14px; }
+
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-field label {
+      font-size: 13px; font-weight: 600; color: var(--dark);
+    }
+
+    .form-field input {
+      padding: 13px 16px; border-radius: 12px;
+      border: 1.5px solid #E5E7EB;
+      font-size: 15px; font-family: inherit; color: var(--dark);
+      background: #FAFAFA;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-field input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(13,115,119,0.1);
+      background: white;
+    }
+
+    .form-field input::placeholder { color: #9CA3AF; }
+
+    .btn-waitlist-submit {
+      padding: 15px; border-radius: 13px;
+      font-size: 16px; font-weight: 700; color: white;
+      background: var(--teal); border: none;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 16px rgba(13,115,119,0.35);
+      margin-top: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .btn-waitlist-submit:hover {
+      background: var(--teal-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(13,115,119,0.4);
+    }
+
+    .btn-waitlist-submit:active { transform: translateY(0); }
+
+    .btn-waitlist-submit .spinner {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: white;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-waitlist-submit.loading .btn-label { display: none; }
+    .btn-waitlist-submit.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal-success {
+      text-align: center; padding: 12px 0 4px;
+      display: none;
+    }
+
+    .success-icon {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: #ECFDF5; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin: 0 auto 20px;
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-success h3 {
+      font-size: 22px; font-weight: 800; color: var(--dark); margin-bottom: 10px;
+    }
+
+    .modal-success p {
+      font-size: 15px; color: var(--mid); margin-bottom: 0;
+    }
+
+    .modal-fine-print {
+      font-size: 12px; color: var(--light); text-align: center; margin-top: 14px;
+    }
+
+    /* Waitlist trigger buttons */
+    .btn-waitlist {
+      padding: 16px 36px; border-radius: 14px;
+      font-size: 16px; font-weight: 700; color: white;
+      background: var(--teal); border: none;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(13,115,119,0.35);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+
+    .btn-waitlist:hover {
+      background: var(--teal-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(13,115,119,0.4);
+    }
+
+    .btn-waitlist-lime {
+      padding: 16px 36px; border-radius: 14px;
+      font-size: 16px; font-weight: 700; color: var(--navy);
+      background: var(--lime); border: none;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(200,243,74,0.35);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+
+    .btn-waitlist-lime:hover {
+      background: var(--lime-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-waitlist-sm {
+      padding: 9px 20px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; color: white;
+      background: var(--teal); border: none;
+      cursor: pointer; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    .btn-waitlist-sm:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,115,119,0.3); }
+  </style>
+</head>
+<body class="dot-bg">
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="logo-dot">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2zm-2 10H6V10h12v2zm0-3H6V7h12v2z"/>
+        </svg>
+      </div>
+      Loopd.ai
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="#pricing" class="btn-ghost">Pricing</a>
+      <button class="btn-waitlist-sm open-waitlist">
+        <span>Join Waitlist</span>
+        <span>→</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero">
+
+    <!-- Floating Cards -->
+    <div class="float-card card-chat">
+      <div class="chat-header">
+        <div class="chat-avatar">L</div>
+        <div>
+          <div class="chat-name">Loopd.ai</div>
+          <div class="chat-time">Just now</div>
+        </div>
+      </div>
+      <div class="chat-bubble">Remind me if Ahmed hasn't replied by Friday 5pm</div>
+      <div class="chat-bubble-out">Done! I'll follow up automatically 👍</div>
+    </div>
+
+    <div class="float-card card-reminder">
+      <div class="reminder-icon">🔔</div>
+      <div class="reminder-label">Reminder Set</div>
+      <div class="reminder-text">Invoice follow-up with Tariq Bhai</div>
+      <div class="reminder-time">Tomorrow · 3:00 PM PKT</div>
+    </div>
+
+    <div class="float-card card-stats">
+      <div class="stats-label">This week's tasks</div>
+      <div class="stat-row">
+        <span class="stat-name">Done</span>
+        <div class="stat-bar-wrap"><div class="stat-bar" style="width:82%"></div></div>
+        <span class="stat-pct">82%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Pending</span>
+        <div class="stat-bar-wrap"><div class="stat-bar" style="width:45%;background:#FCD34D"></div></div>
+        <span class="stat-pct">45%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Overdue</span>
+        <div class="stat-bar-wrap"><div class="stat-bar" style="width:12%;background:#EF4444"></div></div>
+        <span class="stat-pct">12%</span>
+      </div>
+    </div>
+
+    <div class="float-card card-followup">
+      <div class="fu-header">
+        <span class="fu-title">Follow-up Chain</span>
+        <span class="fu-badge">2 Active</span>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot active"></div>
+        <div class="fu-info">
+          <div class="fu-contact">Ahmed Khan</div>
+          <div class="fu-desc">Payment due · Today 5pm</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot pending"></div>
+        <div class="fu-info">
+          <div class="fu-contact">Bilal & Co.</div>
+          <div class="fu-desc">Proposal feedback · Tomorrow</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot done"></div>
+        <div class="fu-info">
+          <div class="fu-contact">Sara (COO)</div>
+          <div class="fu-desc">Replied ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="float-card card-sticky">
+      <div class="sticky-pin"></div>
+      <p>Buy cake mix Friday before 6pm — Ammi's order!</p>
+    </div>
+
+    <div class="float-card card-chip">🤖</div>
+
+    <!-- Hero Content -->
+    <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"><span>✦</span></div>
+      Now available on WhatsApp
+    </div>
+
+    <h1>
+      Message, delegate,<br/>
+      <span class="muted">and get things done.</span>
+    </h1>
+
+    <p>Your AI chief of staff lives inside WhatsApp. No apps. No onboarding. Just send a message.</p>
+
+    <div class="hero-cta">
+      <button class="btn-waitlist open-waitlist">
+        Join the Waitlist
+        <span style="font-size:18px">→</span>
+      </button>
+      <a href="#how" class="btn-hero-ghost">See how it works</a>
+    </div>
+
+    <p class="hero-trust">200+ people already on the list · No spam · Early access perks</p>
+    </div><!-- end hero-content -->
+
+  </section>
+
+  <!-- ══════════════ LOGOS ══════════════ -->
+  <div class="logos-section">
+    <p class="logos-label">Works seamlessly with</p>
+    <div class="logos-row">
+      <div class="logo-pill"><span class="icon">📱</span> WhatsApp</div>
+      <div class="logo-pill"><span class="icon">📅</span> Google Calendar</div>
+      <div class="logo-pill"><span class="icon">🗓️</span> Outlook</div>
+      <div class="logo-pill"><span class="icon">💳</span> JazzCash</div>
+      <div class="logo-pill"><span class="icon">💳</span> Easypaisa</div>
+      <div class="logo-pill"><span class="icon">🤖</span> Claude AI</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ FEATURES ══════════════ -->
+  <section class="section" id="features">
+    <div class="fade-up">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">Everything you need, <span class="muted">nothing you don't.</span></h2>
+      <p class="section-sub">Six powerful capabilities, all accessible through a single WhatsApp conversation.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card featured fade-up">
+        <div class="feature-icon">🔁</div>
+        <div class="feature-title">Follow-up Chains</div>
+        <div class="feature-desc">Set a follow-up once. Loopd monitors replies and auto-escalates until the job is done — without you lifting a finger.</div>
+        <span class="feature-tag">Core Differentiator</span>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-title">Smart Reminders</div>
+        <div class="feature-desc">Natural language reminders in English or Urdu. "Yaad dilao kal shaam 6 baje" — Loopd gets it.</div>
+        <span class="feature-tag">Bilingual NLP</span>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">Task Management</div>
+        <div class="feature-desc">Assign tasks to your team, track progress, and receive completion updates — all via WhatsApp chat.</div>
+        <span class="feature-tag">Team Ready</span>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📋</div>
+        <div class="feature-title">Smart Lists</div>
+        <div class="feature-desc">Shopping lists, project checklists, errands — create, update, and read them with a simple message.</div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Calendar Sync</div>
+        <div class="feature-desc">Connect Google or Outlook. Schedule meetings, check free slots, and get daily briefings — conversationally.</div>
+        <span class="feature-tag">Google + Outlook</span>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">AI Memory</div>
+        <div class="feature-desc">Loopd remembers your contacts, preferences, and patterns. It gets smarter with every message you send.</div>
+        <span class="feature-tag">Personalized AI</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ HOW IT WORKS ══════════════ -->
+  <section class="how-section" id="how">
+    <div class="how-inner">
+      <div class="fade-up">
+        <span class="section-tag">How It Works</span>
+        <h2 class="section-title">Three steps. <span class="muted">Zero friction.</span></h2>
+        <p class="section-sub">No downloads. No sign-up forms. Your WhatsApp is all you need.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card fade-up">
+          <div class="step-number">01</div>
+          <div class="step-icon">💬</div>
+          <div class="step-title">Message Loopd</div>
+          <div class="step-desc">Send a WhatsApp message in plain English or Urdu. Tell Loopd what you need — reminder, follow-up, task, or list.</div>
+        </div>
+        <div class="step-card fade-up">
+          <div class="step-number">02</div>
+          <div class="step-icon">🧠</div>
+          <div class="step-title">AI Understands</div>
+          <div class="step-desc">Loopd's AI parses your intent, extracts every detail — who, what, when, escalation — and schedules the right action automatically.</div>
+        </div>
+        <div class="step-card fade-up">
+          <div class="step-number">03</div>
+          <div class="step-icon">⚡</div>
+          <div class="step-title">Loopd Executes</div>
+          <div class="step-desc">Loopd follows up, re-pings, escalates, and notifies — all without you asking again. You just get results.</div>
+        </div>
+      </div>
+
+      <div class="chat-demo fade-up">
+        <div class="chat-demo-header">
+          <div class="chat-demo-avatar">L</div>
+          <div>
+            <div class="chat-demo-name">Loopd.ai</div>
+            <div class="chat-demo-status">● Online</div>
+          </div>
+        </div>
+        <div class="chat-messages">
+          <div class="msg msg-out">
+            Remind me if Bilal hasn't paid the invoice by Friday 5pm — if he doesn't reply, alert Usman
+            <div class="msg-time" style="text-align:right">12:03 PM</div>
+          </div>
+          <div class="msg-action">
+            <div class="action-label">✦ Loopd parsed your request</div>
+            <div class="action-text">Follow-up chain created · Target: Bilal · Deadline: Friday 17:00 PKT · Escalation: Usman</div>
+          </div>
+          <div class="msg msg-in">
+            Done! I'll check on Friday at 5pm. If Bilal hasn't replied, I'll send him a follow-up automatically. No reply by Saturday morning? I'll alert Usman. 🤖
+            <div class="msg-time">12:03 PM</div>
+          </div>
+          <div class="msg msg-out">
+            Perfect. Also add "team standup every Monday 10am" to my calendar
+            <div class="msg-time" style="text-align:right">12:04 PM</div>
+          </div>
+          <div class="msg msg-in">
+            Added! Recurring event set: Team Standup · Every Monday · 10:00 AM PKT · Google Calendar synced ✓
+            <div class="msg-time">12:04 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PRICING ══════════════ -->
+  <section class="pricing-section" id="pricing">
+    <div class="pricing-header fade-up">
+      <span class="section-tag">Pricing</span>
+      <h2 class="section-title">Simple pricing. <span class="muted">No surprises.</span></h2>
+      <p class="section-sub">Start free, upgrade when you're ready. Pay in PKR via JazzCash or Easypaisa.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="price-card fade-up">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">0</span>
+          <span class="price-period">/mo</span>
+        </div>
+        <div class="price-pkr">PKR 0 forever</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> 10 reminders per month</li>
+          <li><span class="check">✓</span> Basic AI responses</li>
+          <li><span class="check">✓</span> Smart lists</li>
+          <li class="unavailable"><span class="cross">✗</span> Follow-up chains</li>
+          <li class="unavailable"><span class="cross">✗</span> Calendar sync</li>
+          <li class="unavailable"><span class="cross">✗</span> Team features</li>
+        </ul>
+        <button class="price-btn outline open-waitlist">Join Waitlist</button>
+      </div>
+
+      <!-- Personal (Popular) -->
+      <div class="price-card popular fade-up">
+        <div class="popular-badge">Most Popular</div>
+        <div class="price-tier">Personal</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">2<span style="font-size:32px">.99</span></span>
+          <span class="price-period">/mo</span>
+        </div>
+        <div class="price-pkr">PKR 850 / month · JazzCash & Easypaisa</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Unlimited reminders</li>
+          <li><span class="check">✓</span> Follow-up chains</li>
+          <li><span class="check">✓</span> Google + Outlook sync</li>
+          <li><span class="check">✓</span> AI memory layer</li>
+          <li><span class="check">✓</span> Urdu + English NLP</li>
+          <li class="unavailable" style="color:rgba(255,255,255,0.4)"><span class="cross" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3)">✗</span> Team features</li>
+        </ul>
+        <button class="price-btn solid open-waitlist">Join Waitlist — Early Access</button>
+      </div>
+
+      <!-- Business -->
+      <div class="price-card fade-up">
+        <div class="price-tier">Business</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">9<span style="font-size:32px">.99</span></span>
+          <span class="price-period">/mo</span>
+        </div>
+        <div class="price-pkr">PKR 2,800 / month · All payment methods</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Everything in Personal</li>
+          <li><span class="check">✓</span> Team task management</li>
+          <li><span class="check">✓</span> Manager dashboard</li>
+          <li><span class="check">✓</span> Analytics & reports</li>
+          <li><span class="check">✓</span> Priority AI responses</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+        </ul>
+        <button class="price-btn outline open-waitlist">Join Waitlist</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ TESTIMONIAL / STATS ══════════════ -->
+  <section class="testimonial-section">
+    <div class="testimonial-inner">
+      <div class="testimonial-left">
+        <span class="section-tag">Proof</span>
+        <h2 class="section-title" style="font-size:40px">Real users. <span class="muted">Real results.</span></h2>
+        <p class="section-sub">From freelancers to SME owners — Loopd is already changing how people work.</p>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-big">200+</div>
+            <div class="stat-label">Beta waitlist</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-big">68%</div>
+            <div class="stat-label">Use follow-up chains</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-big">3hrs</div>
+            <div class="stat-label">Saved weekly</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote">
+            I used to lose 3–4 follow-ups a week. Loopd closed 2 deals I would have completely forgotten about. It's like having an assistant that never sleeps.
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div>
+              <div class="author-name">Aisha Malik</div>
+              <div class="author-role">Freelance Designer, Lahore</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card" style="margin-top:16px">
+          <div class="testimonial-quote">
+            My whole team communicates on WhatsApp already. Loopd just made it intelligent. Task tracking without a single new app.
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:#1D7A8C">T</div>
+            <div>
+              <div class="author-name">Tariq Hussain</div>
+              <div class="author-role">Owner, Hussain Traders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CTA ══════════════ -->
+  <section class="cta-section">
+    <h2>
+      Your assistant is<br/>
+      <span class="accent">one message away.</span>
+    </h2>
+    <p>No downloads. No onboarding. Add Loopd on WhatsApp and it's ready in 30 seconds.</p>
+    <div class="cta-actions">
+      <button class="btn-waitlist-lime open-waitlist">
+        Join the Waitlist
+        <span style="font-size:18px">→</span>
+      </button>
+      <div class="whatsapp-number">
+        📱 &nbsp;200+ already joined
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo" style="color:white">
+            <div class="logo-dot">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2zm-2 10H6V10h12v2zm0-3H6V7h12v2z"/>
+              </svg>
+            </div>
+            Loopd.ai
+          </a>
+          <p>Your AI chief of staff, living inside WhatsApp. Built for Pakistan, ready for the world.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Roadmap</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Loopd.ai. All rights reserved.</p>
+        <p>Built in <span class="teal">Pakistan</span> · Powered by Claude AI</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════ WAITLIST MODAL ══════════════ -->
+  <div class="modal-overlay" id="waitlistOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" id="waitlistModal">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+
+      <!-- Form view -->
+      <div id="modalForm">
+        <div class="modal-icon">🚀</div>
+        <div class="modal-count">
+          <div class="pulse"></div>
+          247 people on the list
+        </div>
+        <h2 id="modalTitle">Get early access</h2>
+        <p>Be first in line when Loopd launches. Early members get 3 months free + priority onboarding.</p>
+
+        <form class="modal-form" id="waitlistForm" name="waitlist" netlify netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="waitlist" />
+          <p style="display:none"><input name="bot-field" /></p>
+          <div class="form-field">
+            <label for="wl-name">Your name</label>
+            <input type="text" id="wl-name" placeholder="Ahmed Khan" autocomplete="name" required />
+          </div>
+          <div class="form-field">
+            <label for="wl-email">Email address</label>
+            <input type="email" id="wl-email" placeholder="ahmed@example.com" autocomplete="email" required />
+          </div>
+          <div class="form-field">
+            <label for="wl-phone">WhatsApp number <span style="color:var(--light);font-weight:400">(optional)</span></label>
+            <input type="tel" id="wl-phone" placeholder="+92 300 1234567" autocomplete="tel" />
+          </div>
+          <button type="submit" class="btn-waitlist-submit" id="submitBtn">
+            <span class="btn-label">Secure my spot →</span>
+            <div class="spinner"></div>
+          </button>
+        </form>
+        <p class="modal-fine-print">No spam. Unsubscribe anytime. We hate junk mail too.</p>
+      </div>
+
+      <!-- Success view -->
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-icon">🎉</div>
+        <h3>You're on the list!</h3>
+        <p>We'll WhatsApp you the moment Loopd is ready. Your early access perks are locked in.</p>
+        <p style="margin-top:16px;font-size:13px;color:var(--light)">Check your email for confirmation.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Scroll fade-in ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Stagger grid children
+    document.querySelectorAll('.features-grid, .steps-grid, .pricing-grid').forEach(grid => {
+      Array.from(grid.children).forEach((child, i) => {
+        child.style.transitionDelay = `${i * 75}ms`;
+      });
+    });
+
+    // Smooth nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // ── Waitlist modal ──
+    const overlay  = document.getElementById('waitlistOverlay');
+    const modal    = document.getElementById('waitlistModal');
+    const closeBtn = document.getElementById('modalClose');
+    const form     = document.getElementById('waitlistForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formView = document.getElementById('modalForm');
+    const successView = document.getElementById('modalSuccess');
+
+    function openModal() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('wl-name').focus(), 350);
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Open on all .open-waitlist triggers
+    document.querySelectorAll('.open-waitlist').forEach(btn => {
+      btn.addEventListener('click', openModal);
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Form submit — posts to Netlify Forms
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name  = document.getElementById('wl-name').value.trim();
+      const email = document.getElementById('wl-email').value.trim();
+      const phone = document.getElementById('wl-phone').value.trim();
+
+      if (!name || !email) {
+        document.getElementById(!name ? 'wl-name' : 'wl-email').focus();
+        return;
+      }
+
+      submitBtn.classList.add('loading');
+
+      try {
+        const body = new URLSearchParams({
+          'form-name': 'waitlist',
+          'name': name,
+          'email': email,
+          'phone': phone,
+        });
+
+        await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+
+        submitBtn.classList.remove('loading');
+        formView.style.display = 'none';
+        successView.style.display = 'block';
+        setTimeout(closeModal, 4000);
+      } catch (err) {
+        submitBtn.classList.remove('loading');
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>
