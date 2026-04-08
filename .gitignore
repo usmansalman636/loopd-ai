@@ -1,0 +1,36 @@
+# Environment & secrets
+.env
+.env.*
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Generated files
+create_pitch_deck.py
+Loopd_ai_Pitch_Deck.pptx
+
+# Claude memory / IDE
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Node (if added later)
+node_modules/
+.npm/
